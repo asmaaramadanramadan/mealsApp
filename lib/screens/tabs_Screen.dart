@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meal/provider/meals_provider.dart';
 import 'package:meal/screens/categories_Screen.dart';
 import 'package:meal/screens/meals_Screen.dart';
-
 import '../models/meal.dart';
 import '../widgets/main_Drawer.dart';
 import 'favorite_Screen.dart';
@@ -13,14 +14,14 @@ const kInitialFilter = {
   Filter.vegeterian: false
 };
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() => _TabsScreenState();
+  ConsumerState<TabsScreen> createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedIndex = 0;
 
   void _selectedPage(int index) {
@@ -54,17 +55,18 @@ class _TabsScreenState extends State<TabsScreen> {
       _showInfoMessage("added");
     }
   }
+  //
 
   Map<Filter, bool> _selectedFilters = kInitialFilter;
 
   @override
   Widget build(BuildContext context) {
+    final meals = ref.watch(mealsProvider);
+
     Widget activePage = CategoriesScreen(
       onToggleFavorite: _toggleMealFavoriteStatus,
     );
-
     var activePageTitle = 'Pick your category';
-
     if (_selectedIndex == 1) {
       activePage = MealsScreen(
         meals: _favoriteMeal,
